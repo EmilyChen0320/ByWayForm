@@ -77,11 +77,11 @@ import { ref } from 'vue'
 const emit = defineEmits(['start'])
 
 // 圖片路徑
-const backgroundImage = ref('/resources/assets/images/background.png')
-const headerImage = ref('/resources/assets/images/header.png')
-const posterImage = ref('/resources/assets/images/MainImage.png')
-const clickImage = ref('/resources/assets/images/click.png')
-const shineImage = ref('/resources/assets/images/shine.png')
+const backgroundImage = ref('/images/background.png')
+const headerImage = ref('/images/header.png')
+const posterImage = ref('/images/MainImage.png')
+const clickImage = ref('/images/click.png')
+const shineImage = ref('/images/shine.png')
 
 function handleStart() {
   emit('start')

@@ -1,5 +1,13 @@
 <template>
   <div class="app min-h-screen">
+    <!-- 載入中 -->
+    <div v-if="currentStep === 'loading'" class="flex items-center justify-center min-h-screen">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p class="text-gray-600">載入中...</p>
+      </div>
+    </div>
+
     <!-- 歡迎頁面 -->
     <WelcomePage
       v-if="currentStep === 'welcome'"
@@ -35,11 +43,11 @@ import { liffService } from '../services/liffService.js'
 import { registrationService } from '../services/registrationService.js'
 
 const userId = ref('')
-const userName = ref('') // 用戶名稱，測試時使用預設值
-const currentStep = ref('welcome') //welcome, form, success
+const userName = ref('') // 用戶名稱
+const currentStep = ref('loading') // loading -> 由 checkInitialStatus 決定顯示哪個頁面
 const formData = ref({})
-const registration = ref({ name: '' }) // 模擬報名資料
-const isFull = ref(true) //true: 額滿, false: 報名成功
+const registration = ref(null) // 報名資料
+const isFull = ref(false) // 是否額滿
 
 // LIFF 初始化
 async function initializeLiff() {
@@ -72,6 +80,46 @@ async function initializeLiff() {
   }
 }
 
+// 檢查初始報名狀態
+async function checkInitialStatus() {
+  if (!userId.value) {
+    console.warn('⚠️ 沒有 userId，跳過狀態檢查')
+    return
+  }
+  
+  try {
+    console.log('🔍 檢查報名狀態...')
+    
+    const result = await registrationService.checkRegistrationStatus(userId.value)
+    
+    if (result.status === 'registered') {
+      // 已報名：顯示成功頁面
+      console.log('✅ 用戶已報名')
+      registration.value = result.data
+      userName.value = result.data.name || userName.value
+      isFull.value = false
+      currentStep.value = 'success'
+    } else if (result.status === 'full') {
+      // 額滿：顯示額滿頁面
+      console.log('⚠️ 活動額滿')
+      isFull.value = true
+      currentStep.value = 'success'
+    } else if (result.status === 'available') {
+      // 可報名：顯示歡迎頁
+      console.log('✅ 可以報名')
+      currentStep.value = 'welcome'
+    } else {
+      // 錯誤或未知狀態：預設顯示歡迎頁
+      console.warn('⚠️ 未知狀態，顯示歡迎頁')
+      currentStep.value = 'welcome'
+    }
+  } catch (error) {
+    console.error('❌ 檢查狀態失敗:', error)
+    // 發生錯誤時，預設顯示歡迎頁
+    currentStep.value = 'welcome'
+  }
+}
+
 // 頁面導航
 function goToWelcome() {
   currentStep.value = 'welcome'
@@ -88,28 +136,32 @@ async function handleFormSubmit(data) {
   formData.value = data
   
   try {
+    console.log('📤 準備提交報名...')
+    
     // 提交報名
     const result = await registrationService.submitRegistration({
       user_id: userId.value,
       ...formData.value
     })
     
-    if (result.success) {
+    console.log('📥 收到回應:', result)
+    
+    // 根據回應狀態處理
+    if (result.success || result.status === 'success' || result.status === 'registered') {
+      // 報名成功
       registration.value = result.data
-      // 更新 userName 為表單填寫的名字
       userName.value = data.name || userName.value
-      // 可以根據後端回傳判斷是否額滿
-      // isFull.value = result.data.is_full || false
-      isFull.value = false // 預設顯示報名成功
+      isFull.value = false
+      currentStep.value = 'success'
+    } else if (result.status === 'full') {
+      // 提交時才發現額滿
+      console.log('⚠️ 活動已額滿')
+      isFull.value = true
       currentStep.value = 'success'
     } else {
-      // 如果是額滿的情況
-      if (result.error?.code === 'FULL') {
-        isFull.value = true
-        currentStep.value = 'success'
-      } else {
-        alert('報名失敗：' + (result.error?.message || '未知錯誤'))
-      }
+      // 其他錯誤
+      const errorMsg = result.message || result.error?.message || '未知錯誤'
+      alert('報名失敗：' + errorMsg)
     }
   } catch (error) {
     console.error('❌ 報名失敗:', error)
@@ -122,9 +174,10 @@ function handleClose() {
   goToWelcome()
 }
 
-// 在掛載前初始化 LIFF
+// 在掛載前初始化 LIFF 並檢查狀態
 onBeforeMount(async () => {
   await initializeLiff()
+  await checkInitialStatus()
 })
 </script>
 

@@ -45,8 +45,8 @@
                   發送粉絲活動通行證給您
                 </p>
                 <p class="font-semibold">
-                  <span style="color: #FFF001; text-decoration: underline wavy;">活動當天出示官方LINE內通行證</span><br>
-                  <span style="color: #FFF001; text-decoration: underline wavy;">即可兌換限量好禮，</span><span class="text-white">期待與您現場相見！</span>
+                  <span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">活動當天出示官方LINE內通行證</span><br>
+                  <span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">即可兌換限量好禮，</span><span class="text-white">期待與您現場相見！</span>
                 </p>
               </div>
             </div>
@@ -117,9 +117,9 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const backgroundImage = ref('/resources/assets/images/background.png')
-const headerImage = ref('/resources/assets/images/header.png')
-const posterImage = ref('/resources/assets/images/MainImage.png')
+const backgroundImage = ref('/images/background.png')
+const headerImage = ref('/images/header.png')
+const posterImage = ref('/images/MainImage.png')
 
 function handleClose() {
   // 可以關閉 LIFF 視窗

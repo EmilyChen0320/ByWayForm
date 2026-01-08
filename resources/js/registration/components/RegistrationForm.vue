@@ -94,10 +94,10 @@
         </div>
 
         <!-- 警告訊息 -->
-        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex items-start">
-          <img :src="warnImage" alt="警告" class="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
+        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex items-center">
+          <img :src="warnImage" alt="警告" class="w-5 h-5 mr-2 flex-shrink-0" />
           <p class="text-xs text-yellow-800">
-            資料送出後將無法修改，請務必確填寫資為正確。
+            資料送出後將無法修改，請務必確認填寫內容正確。
           </p>
         </div>
 
@@ -139,8 +139,8 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'back'])
 
-const posterImage = ref('/resources/assets/images/MainImage.png')
-const warnImage = ref('/resources/assets/images/warn.png')
+const posterImage = ref('/images/MainImage.png')
+const warnImage = ref('/images/warn.png')
 
 const form = ref({
   name: '',
