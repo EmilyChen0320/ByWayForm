@@ -42,7 +42,7 @@
           <h2 class="text-lg font-bold text-gray-900 mb-2">
             一起來見面、聊天、拿好禮 <span class="text-red-500">❤️</span>
           </h2>
-          <div class="text-base font-semibold text-gray-900 space-y-1">
+          <div class="text-base font-semibold text-gray-900 text-left inline-block">
             <p>時間：2026/2/7 (六) 13:30</p>
             <p>地點：台北市迪化街永樂廣場</p>
           </div>
