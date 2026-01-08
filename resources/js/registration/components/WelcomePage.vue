@@ -54,11 +54,13 @@
     <div class="relative z-10 px-4" style="padding-bottom: max(3rem, env(safe-area-inset-bottom, 0px) + 1rem);">
       <button
         @click="handleStart"
-        class="relative w-full max-w-[360px] mx-auto flex items-center justify-center gap-2 py-5 text-white text-xl font-bold rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
+        class="relative w-full max-w-[360px] mx-auto flex items-center justify-center py-5 text-white text-xl font-bold rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
         style="background: linear-gradient(135deg, #FFDB4C 0%, #FFB800 100%);"
       >
-        <span>立即報名</span>
-        <img :src="shineImage" alt="✨" class="w-6 h-6" />
+        <span class="flex items-center gap-2">
+          <span>立即報名</span>
+          <img :src="shineImage" alt="✨" class="w-6 h-6" />
+        </span>
         <!-- 點擊手指圖示 -->
         <img 
           :src="clickImage" 
