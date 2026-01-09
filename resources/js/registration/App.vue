@@ -52,26 +52,21 @@ const isFull = ref(false) // 是否額滿
 // LIFF 初始化
 async function initializeLiff() {
   try {
-    console.log('🔧 開始初始化 LIFF...')
-    
     const result = await liffService.initializeLiff()
     
     if (result.success && result.isLoggedIn && result.userId) {
       userId.value = result.userId
-      console.log('✅ LIFF 用戶 ID 已設置:', userId.value)
       
       // 獲取用戶名稱
       const profile = await liffService.getUserProfile()
       if (profile && profile.displayName) {
         userName.value = profile.displayName
-        console.log('✅ 用戶名稱已獲取:', userName.value)
       }
     } else {
       // 使用測試 ID
       const testUserId = window.endpoint?.testUserId || 'test_user_' + Date.now()
       userId.value = testUserId
       userName.value = '測試用戶'
-      console.log('⚠️ 使用測試用戶 ID:', userId.value)
     }
   } catch (error) {
     console.error('❌ LIFF 初始化失敗:', error)
@@ -88,29 +83,28 @@ async function checkInitialStatus() {
   }
   
   try {
-    console.log('🔍 檢查報名狀態...')
-    
     const result = await registrationService.checkRegistrationStatus(userId.value)
     
-    if (result.status === 'registered') {
+    const status = (result.result?.status || result.status || '').toLowerCase()
+    const userData = result.result?.data || result.data || null
+    
+    if (status === 'registered') {
       // 已報名：顯示成功頁面
-      console.log('✅ 用戶已報名')
-      registration.value = result.data
-      userName.value = result.data.name || userName.value
+      registration.value = userData
+      userName.value = userData?.name || userName.value
       isFull.value = false
       currentStep.value = 'success'
-    } else if (result.status === 'full') {
+    } else if (status === 'full') {
       // 額滿：顯示額滿頁面
-      console.log('⚠️ 活動額滿')
       isFull.value = true
       currentStep.value = 'success'
-    } else if (result.status === 'available') {
+    } else if (status === 'available') {
       // 可報名：顯示歡迎頁
-      console.log('✅ 可以報名')
       currentStep.value = 'welcome'
     } else {
       // 錯誤或未知狀態：預設顯示歡迎頁
-      console.warn('⚠️ 未知狀態，顯示歡迎頁')
+      console.warn('⚠️ 未知狀態:', status, '，預設顯示歡迎頁')
+      console.warn('⚠️ 完整回應結構:', result)
       currentStep.value = 'welcome'
     }
   } catch (error) {
@@ -136,31 +130,34 @@ async function handleFormSubmit(data) {
   formData.value = data
   
   try {
-    console.log('📤 準備提交報名...')
-    
     // 提交報名
     const result = await registrationService.submitRegistration({
       user_id: userId.value,
       ...formData.value
     })
     
-    console.log('📥 收到回應:', result)
+    // 提取用戶資料：優先從 result.result.data 讀取，如果不存在則從 result.data 讀取
+    const userData = result.result?.data || result.data || null
+    
+    // 提取狀態值：統一轉換為小寫進行比較
+    const status = (result.result?.status || result.status || '').toLowerCase()
     
     // 根據回應狀態處理
-    if (result.success || result.status === 'success' || result.status === 'registered') {
+    if (result.success || status === 'success' || status === 'registered') {
       // 報名成功
-      registration.value = result.data
-      userName.value = data.name || userName.value
+      registration.value = userData
+      // 正確提取用戶名稱：優先從 userData.name，其次 formData.name，最後使用已獲取的 userName.value
+      userName.value = userData?.name || data.name || userName.value
       isFull.value = false
       currentStep.value = 'success'
-    } else if (result.status === 'full') {
+    } else if (status === 'full') {
       // 提交時才發現額滿
-      console.log('⚠️ 活動已額滿')
       isFull.value = true
       currentStep.value = 'success'
     } else {
       // 其他錯誤
       const errorMsg = result.message || result.error?.message || '未知錯誤'
+      console.error('❌ 報名失敗，錯誤訊息:', errorMsg)
       alert('報名失敗：' + errorMsg)
     }
   } catch (error) {
