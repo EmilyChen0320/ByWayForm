@@ -99,6 +99,9 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import backgroundImg from '@assets/images/background.png'
+import headerImg from '@assets/images/header.png'
+import posterImg from '@assets/images/MainImage.png'
 
 const props = defineProps({
   registration: {
@@ -117,9 +120,9 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const backgroundImage = ref('/images/background.png')
-const headerImage = ref('/images/header.png')
-const posterImage = ref('/images/MainImage.png')
+const backgroundImage = ref(backgroundImg)
+const headerImage = ref(headerImg)
+const posterImage = ref(posterImg)
 
 function handleClose() {
   // 可以關閉 LIFF 視窗

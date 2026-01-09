@@ -125,6 +125,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import posterImg from '@assets/images/MainImage.png'
+import warnImg from '@assets/images/warn.png'
 
 const props = defineProps({
   userId: {
@@ -139,8 +141,8 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'back'])
 
-const posterImage = ref('/images/MainImage.png')
-const warnImage = ref('/images/warn.png')
+const posterImage = ref(posterImg)
+const warnImage = ref(warnImg)
 
 const form = ref({
   name: '',

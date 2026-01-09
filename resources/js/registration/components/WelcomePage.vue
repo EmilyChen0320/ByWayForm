@@ -75,15 +75,20 @@
 
 <script setup>
 import { ref } from 'vue'
+import backgroundImg from '@assets/images/background.png'
+import headerImg from '@assets/images/header.png'
+import posterImg from '@assets/images/MainImage.png'
+import clickImg from '@assets/images/click.png'
+import shineImg from '@assets/images/shine.png'
 
 const emit = defineEmits(['start'])
 
 // 圖片路徑
-const backgroundImage = ref('/images/background.png')
-const headerImage = ref('/images/header.png')
-const posterImage = ref('/images/MainImage.png')
-const clickImage = ref('/images/click.png')
-const shineImage = ref('/images/shine.png')
+const backgroundImage = ref(backgroundImg)
+const headerImage = ref(headerImg)
+const posterImage = ref(posterImg)
+const clickImage = ref(clickImg)
+const shineImage = ref(shineImg)
 
 function handleStart() {
   emit('start')
