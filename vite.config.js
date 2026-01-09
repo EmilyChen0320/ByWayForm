@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [
         vue(),
     ],
-    base: '/',
+    base: '/ByWay/',
     resolve: {
         alias: {
             '@': resolve(__dirname, 'resources/js'),
