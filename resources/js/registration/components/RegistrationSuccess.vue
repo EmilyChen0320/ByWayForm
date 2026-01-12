@@ -34,19 +34,18 @@
           <div class="bg-black bg-opacity-75 flex items-center justify-center py-5 px-6">
             <!-- 報名成功內容 -->
             <div v-if="!isFull" class="text-white text-center">
-              <h2 class="text-base font-bold mb-2">{{ userName }}，您好</h2>
-              <p class="text-base leading-relaxed mb-4">
+              <h2 class="text-sm font-bold mb-2">{{ userName }}，您好</h2>
+              <p class="text-sm leading-relaxed mb-4">
                 您已成功報名《百味人生》<br>
-                粉絲見面會早鳥好禮活動！
+                粉絲見面會早鳥好康活動！
               </p>
-              <div class="text-base leading-relaxed">
+              <div class="text-sm leading-relaxed">
+                <p class="font-semibold text-base"><span style="color: #FFF001; text-underline-offset: 3px;">《限量好禮兌換方式》</span></p>
                 <p class="">
-                  我們將於粉絲見面會前<br>
-                  發送粉絲活動通行證給您
+                  1. 粉絲見面會前將發送粉絲活動通行證給您
                 </p>
                 <p class="font-semibold">
-                  <span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">活動當天出示官方LINE內通行證</span><br>
-                  <span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">即可兌換限量好禮，</span><span class="text-white">期待與您現場相見！</span>
+                  2. 請於<span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">活動當天11:00~16:00於【早鳥好康活動兌換處】</span><span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">出示官方LINE內通行證即可兌換限量好禮</span>
                 </p>
               </div>
             </div>
@@ -75,10 +74,19 @@
         </div>
 
         <!-- 活動資訊 -->
-        <div class="pt-4 pb-2 text-center">
-          <div class="text-lg font-bold text-gray-900 space-y-1">
-            <p>時間：2026/2/7 (六) 13:30</p>
-            <p>地點：台北市迪化街永樂廣場</p>
+        <div class="pt-4 pb-2">
+          <div class="text-sm font-bold text-gray-900 space-y-1">
+            <p>活動時間：2026/2/7(六) 13:30</p>
+            <p>
+              活動地點：
+              <a 
+                href="https://www.google.com/maps/search/?api=1&query=台北市迪化街大稻埕戲苑前廣場"
+                target="_blank"
+                class="text-blue-600 underline hover:text-blue-800 transition-colors font-bold"
+              >
+                📍 台北市迪化街大稻埕戲苑前廣場
+              </a>
+            </p>
           </div>
         </div>
       </div>
