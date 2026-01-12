@@ -125,12 +125,40 @@ const headerImage = ref(headerImg)
 const posterImage = ref(posterImg)
 
 function handleClose() {
-  // 可以關閉 LIFF 視窗
+  // LIFF 環境：關閉 LIFF 視窗
   if (typeof liff !== 'undefined' && liff.isInClient()) {
     liff.closeWindow()
-  } else {
-    emit('close')
+    return
   }
+  
+  // PC 版：嘗試關閉視窗
+  // window.close() 只有在視窗是由 JavaScript 打開時才能關閉
+  // 如果視窗是用戶直接打開的，window.close() 不會工作（瀏覽器安全限制）
+  
+  // 如果已報名成功，嘗試關閉視窗；如果無法關閉，保持在成功頁面
+  if (props.registration || props.isFull) {
+    // 檢查視窗是否可以關閉
+    // window.opener 存在表示視窗是由 JavaScript 打開的
+    if (window.opener) {
+      try {
+        window.close()
+        // 如果關閉成功，視窗會關閉，不會執行後續代碼
+        return
+      } catch (error) {
+        // 關閉失敗，保持在成功頁面
+        alert('報名已完成！您可以手動關閉此視窗。')
+        return
+      }
+    } else {
+      // 視窗不是由 JavaScript 打開的，無法關閉
+      // 保持在成功頁面，不 emit('close')
+      alert('報名已完成！您可以手動關閉此視窗。')
+      return
+    }
+  }
+  
+  // 只有在未報名成功的情況下（例如其他情況），才 emit('close')
+  emit('close')
 }
 </script>
 

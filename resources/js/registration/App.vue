@@ -167,7 +167,16 @@ async function handleFormSubmit(data) {
 }
 
 function handleClose() {
-  // 關閉或返回首頁
+  // 檢查是否在 LIFF 環境中
+  const isInLiff = typeof liff !== 'undefined' && liff.isInClient()
+  
+  // 如果在 PC 版且已報名成功，保持在成功頁面
+  if (!isInLiff && registration.value) {
+    // 保持在成功頁面，不執行任何操作
+    return
+  }
+  
+  // 其他情況：回到歡迎頁面
   goToWelcome()
 }
 
