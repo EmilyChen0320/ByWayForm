@@ -31,7 +31,7 @@
              }">
           
           <!-- 半透明黑色遮罩 + 文字內容 -->
-          <div class="bg-black bg-opacity-75 flex items-center justify-center py-5 px-6">
+          <div class="bg-black bg-opacity-75 flex items-center justify-center py-8 px-6">
             <!-- 報名成功內容 -->
             <div v-if="!isFull" class="text-white text-center">
               <h2 class="text-sm font-bold mb-2">{{ userName }}，您好</h2>
@@ -52,21 +52,16 @@
 
             <!-- 額滿內容 -->
             <div v-else class="text-white text-center">
-              <h2 class="text-xl font-bold">感謝您的熱情參與，</h2>
-              <p class="text-xl font-bold mb-4">
-                早鳥好康活動名額 已額滿/截止
-              </p>
+              <h2 class="text-xl font-bold mb-4">早鳥好康活動名額 已額滿</h2>
+
               <div class="text-sm leading-relaxed">
-                <p class="">
-                  誠摯邀請您於活動當天蒞臨<br>
-                  《百味人生》粉絲見面會，
-                </p>
-                <p class="">
-                  現場加入 Fanpokka 粉絲通行證<br>
-                  官方 LINE，也能獲得小禮物唷！
-                </p>
-                <p class="text-gray-300 text-xs">
-                  （數量有限，送完為止）
+                <p class="font-bold">
+                    當天仍歡迎您至《百味人生》粉絲見面會
+                  </p>
+                  <p class="font-bold">
+                  現場與演員同樂<br>
+                  更多好康抽獎活動<br>
+                  請上三立台劇官方粉絲專頁查詢<br>
                 </p>
               </div>
             </div>
