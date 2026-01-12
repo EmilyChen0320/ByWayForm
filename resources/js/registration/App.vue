@@ -19,7 +19,7 @@
       v-if="currentStep === 'form'"
       :userId="userId"
       :userName="userName"
-      @submit="handleFormSubmit"
+      @submit-result="handleFormSubmit"
       @back="goToWelcome"
     />
 
@@ -77,8 +77,19 @@ async function initializeLiff() {
 
 // 檢查初始報名狀態
 async function checkInitialStatus() {
+  // 檢查 URL 參數，如果存在 skipCheck 或 test 參數，則跳過狀態檢查
+  const urlParams = new URLSearchParams(window.location.search)
+  const skipCheck = urlParams.get('skipCheck') === 'true' || urlParams.get('test') === 'true'
+  
+  if (skipCheck) {
+    console.log('🧪 測試模式：跳過狀態檢查，直接顯示歡迎頁')
+    currentStep.value = 'welcome'
+    return
+  }
+  
   if (!userId.value) {
     console.warn('⚠️ 沒有 userId，跳過狀態檢查')
+    currentStep.value = 'welcome'
     return
   }
   
@@ -126,28 +137,28 @@ function goToForm() {
   currentStep.value = 'form'
 }
 
-async function handleFormSubmit(data) {
-  formData.value = data
+async function handleFormSubmit(result) {
+  // formData.value = data // data 不再傳入，如果需要保存 formData，可以在 result 中回傳或是由 RegistrationForm 傳入更多參數，但這裡主要用來顯示結果
+  // 由於 RegistrationForm 已經處理了提交，這裡只需要處理結果
   
   try {
-    // 提交報名
-    const result = await registrationService.submitRegistration({
-      user_id: userId.value,
-      ...formData.value
-    })
+    // 根據 registrationService.js 的返回格式：
+    // 成功：{ success: true, status, data, message }
+    // 失敗：{ success: false, status: 'error', error: { message } }
     
-    // 提取用戶資料：優先從 result.result.data 讀取，如果不存在則從 result.data 讀取
-    const userData = result.result?.data || result.data || null
+    // 提取用戶資料：直接從 result.data 讀取（不是 result.result.data）
+    const userData = result.data || null
     
     // 提取狀態值：統一轉換為小寫進行比較
-    const status = (result.result?.status || result.status || '').toLowerCase()
+    const status = (result.status || '').toLowerCase()
     
     // 根據回應狀態處理
     if (result.success || status === 'success' || status === 'registered') {
       // 報名成功
       registration.value = userData
-      // 正確提取用戶名稱：優先從 userData.name，其次 formData.name，最後使用已獲取的 userName.value
-      userName.value = userData?.name || data.name || userName.value
+      // 正確提取用戶名稱：優先從 userData.name，其次使用已獲取的 userName.value
+      // 注意：因為不再接收原始 formData，這裡主要依賴回傳的 userData
+      userName.value = userData?.name || userName.value
       isFull.value = false
       currentStep.value = 'success'
     } else if (status === 'full') {
@@ -161,7 +172,7 @@ async function handleFormSubmit(data) {
       alert('報名失敗：' + errorMsg)
     }
   } catch (error) {
-    console.error('❌ 報名失敗:', error)
+    console.error('❌ 處理報名結果失敗:', error)
     alert('報名失敗，請稍後再試')
   }
 }

@@ -127,6 +127,7 @@
 import { ref, computed, onMounted } from 'vue'
 import posterImg from '@assets/images/MainImage.png'
 import warnImg from '@assets/images/warn.png'
+import { registrationService } from '../../services/registrationService.js'
 
 const props = defineProps({
   userId: {
@@ -139,7 +140,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['submit', 'back'])
+const emit = defineEmits(['submit-result', 'back'])
 
 const posterImage = ref(posterImg)
 const warnImage = ref(warnImg)
@@ -196,7 +197,7 @@ function validatePhone() {
   return true
 }
 
-function handleSubmit() {
+async function handleSubmit() {
   // 驗證必填欄位
   const isNameValid = validateName()
   const isPhoneValid = validatePhone()
@@ -205,7 +206,42 @@ function handleSubmit() {
     return
   }
   
-  emit('submit', form.value)
+  // 防止重複提交
+  if (isSubmitting.value) {
+    return
+  }
+  
+  isSubmitting.value = true
+  
+  try {
+    // 呼叫 API
+    const result = await registrationService.submitRegistration({
+      user_id: props.userId,
+      ...form.value
+    })
+    
+    // 如果成功，發送結果並直接返回
+    // 保持 isSubmitting 為 true，防止在頁面跳轉前重複點擊
+    if (result.success) {
+      emit('submit-result', result)
+      return
+    }
+    
+    // 如果是邏輯上的失敗（如後端返回額滿），發送結果並重置狀態以允許重試
+    emit('submit-result', result)
+    isSubmitting.value = false
+    
+  } catch (error) {
+    console.error('Submission error:', error)
+    // 發生意外錯誤時的處理
+    emit('submit-result', {
+      success: false,
+      status: 'error',
+      message: '系統發生錯誤，請稍後再試'
+    })
+    // 發生錯誤，重置狀態允許重試
+    isSubmitting.value = false
+  }
 }
 
 function handleBack() {
