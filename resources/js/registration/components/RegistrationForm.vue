@@ -96,7 +96,7 @@
         <!-- 警告訊息 -->
         <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex items-center">
           <img :src="warnImage" alt="警告" class="w-5 h-5 mr-2 flex-shrink-0" />
-          <p class="text-xs text-yellow-800">
+          <p class="text-xs" style="color: #B75313;">
             資料送出後將無法修改，請務必確認填寫內容正確。
           </p>
         </div>
@@ -112,7 +112,7 @@
             ]"
             :style="isFormValid 
               ? 'background: linear-gradient(135deg, #FFDB4C 0%, #FFB800 100%);' 
-              : 'background: #9CA3AF;'"
+              : 'background: #A0A0A0;'"
           >
             <span v-if="isSubmitting">提交中...</span>
             <span v-else>提交</span>
