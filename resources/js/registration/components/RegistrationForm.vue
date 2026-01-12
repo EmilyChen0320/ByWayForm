@@ -223,7 +223,13 @@ async function handleSubmit() {
     // 如果成功，發送結果並直接返回
     // 保持 isSubmitting 為 true，防止在頁面跳轉前重複點擊
     if (result.success) {
-      emit('submit-result', result)
+      // 將表單中的 name 也一起傳遞，確保成功頁面能顯示正確的姓名
+      emit('submit-result', {
+        ...result,
+        formData: {
+          name: form.value.name
+        }
+      })
       return
     }
     

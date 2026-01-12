@@ -156,9 +156,8 @@ async function handleFormSubmit(result) {
     if (result.success || status === 'success' || status === 'registered') {
       // 報名成功
       registration.value = userData
-      // 正確提取用戶名稱：優先從 userData.name，其次使用已獲取的 userName.value
-      // 注意：因為不再接收原始 formData，這裡主要依賴回傳的 userData
-      userName.value = userData?.name || userName.value
+      // 優先使用表單提交的 name（最可靠），其次使用 API 返回的 name，最後使用已獲取的 userName
+      userName.value = result.formData?.name || userData?.name || userName.value
       isFull.value = false
       currentStep.value = 'success'
     } else if (status === 'full') {
