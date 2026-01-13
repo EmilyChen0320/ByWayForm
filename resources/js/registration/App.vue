@@ -77,22 +77,50 @@ async function initializeLiff() {
 
 // 檢查初始報名狀態
 async function checkInitialStatus() {
-  // 檢查 URL 參數，如果存在 skipCheck 或 test 參數，則跳過狀態檢查
   const urlParams = new URLSearchParams(window.location.search)
-  const skipCheck = urlParams.get('skipCheck') === 'true' || urlParams.get('test') === 'true'
+  const testParam = urlParams.get('test')
+  const skipCheck = urlParams.get('skipCheck') === 'true'
   
+  // 1. 測試模式：URL 參數測試（優先級最高，方便測試）
+  if (testParam === 'full' || testParam === 'expired') {
+    console.log('🧪 測試模式：模擬', testParam === 'expired' ? '過期' : '額滿', '狀態')
+    isFull.value = true
+    currentStep.value = 'success'
+    return
+  }
+  
+  if (testParam === 'available') {
+    console.log('🧪 測試模式：模擬可報名狀態')
+    currentStep.value = 'welcome'
+    return
+  }
+  
+  // 舊的測試參數兼容（跳過檢查，直接顯示歡迎頁）
   if (skipCheck) {
     console.log('🧪 測試模式：跳過狀態檢查，直接顯示歡迎頁')
     currentStep.value = 'welcome'
     return
   }
   
+  // 2. 檢查截止日期（2026年1月13日 12:12 台灣時間 UTC+8）
+  const deadline = new Date('2026-01-13T12:12:00+08:00')
+  const now = new Date()
+  
+  if (now > deadline) {
+    console.log('⏰ 已超過截止日期（2026/1/13 12:12），顯示額滿畫面')
+    isFull.value = true
+    currentStep.value = 'success'
+    return
+  }
+  
+  // 3. 沒過期，檢查 userId
   if (!userId.value) {
     console.warn('⚠️ 沒有 userId，跳過狀態檢查')
     currentStep.value = 'welcome'
     return
   }
   
+  // 4. 調用 API 檢查狀態
   try {
     const result = await registrationService.checkRegistrationStatus(userId.value)
     
