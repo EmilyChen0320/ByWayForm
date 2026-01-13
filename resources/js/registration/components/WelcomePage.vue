@@ -44,7 +44,7 @@
           </h2>
           <div class="text-base font-semibold text-gray-900 text-left inline-block">
             <p>時間：2026/2/7 (六) 13:30</p>
-            <p>地點：台北市迪化街永樂廣場</p>
+            <p>地點：台北市迪化街大稻埕戲苑前廣場</p>
           </div>
         </div>
       </div>

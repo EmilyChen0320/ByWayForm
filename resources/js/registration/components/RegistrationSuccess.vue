@@ -42,10 +42,10 @@
               <div class="text-sm leading-relaxed">
                 <p class="font-semibold text-base"><span style="color: #FFF001; text-underline-offset: 3px;">《限量好禮兌換方式》</span></p>
                 <div class="inline-block text-left">
-                  <p class="mb-1">
+                  <p class="">
                     1. 粉絲見面會前將發送粉絲活動通行證給您
                   </p>
-                  <p class="font-semibold">
+                  <p>
                     2. 請於<span class="wavy-yellow-text">活動當天11:00~16:00於【早鳥好康活動兌換處】</span><span class="wavy-yellow-text">出示官方LINE內通行證即可兌換限量好禮</span>
                   </p>
                 </div>
