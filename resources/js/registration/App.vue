@@ -102,12 +102,12 @@ async function checkInitialStatus() {
     return
   }
   
-  // 2. 檢查截止日期（2026年1月13日 12:12 台灣時間 UTC+8）
-  const deadline = new Date('2026-01-13T12:12:00+08:00')
+  // 2. 檢查截止日期（2026年2月3日 23:59 台灣時間 UTC+8）
+  const deadline = new Date('2026-02-03T23:59:59+08:00')
   const now = new Date()
   
   if (now > deadline) {
-    console.log('⏰ 已超過截止日期（2026/1/13 12:12），顯示額滿畫面')
+    console.log('⏰ 已超過截止日期（2026/2/3 23:59），顯示額滿畫面')
     isFull.value = true
     currentStep.value = 'success'
     return
