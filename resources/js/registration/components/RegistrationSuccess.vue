@@ -46,7 +46,7 @@
                     1. 粉絲見面會前將發送粉絲活動通行證給您
                   </p>
                   <p class="font-semibold">
-                    2. 請於<span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">活動當天11:00~16:00於【早鳥好康活動兌換處】</span><span style="color: #FFF001; text-decoration: underline wavy; text-underline-offset: 3px;">出示官方LINE內通行證即可兌換限量好禮</span>
+                    2. 請於<span class="wavy-yellow-text">活動當天11:00~16:00於【早鳥好康活動兌換處】</span><span class="wavy-yellow-text">出示官方LINE內通行證即可兌換限量好禮</span>
                   </p>
                 </div>
               </div>
@@ -129,6 +129,12 @@ const backgroundImage = ref(backgroundImg)
 const headerImage = ref(headerImg)
 const posterImage = ref(posterImg)
 
+// 調試：監控 isFull 變化
+import { watch } from 'vue'
+watch(() => props.isFull, (newVal) => {
+  console.log('🎯 RegistrationSuccess isFull 變化:', newVal)
+}, { immediate: true })
+
 function handleClose() {
   // LIFF 環境：關閉 LIFF 視窗
   if (typeof liff !== 'undefined' && liff.isInClient()) {
@@ -173,5 +179,19 @@ function handleClose() {
   .max-w-\[340px\] {
     max-width: calc(100vw - 3rem);
   }
+}
+
+/* 黃色波浪底線文字 - 兼容 iPhone Safari */
+.wavy-yellow-text {
+  color: #FFF001;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #FFF001;
+  text-underline-offset: 3px;
+  /* WebKit 前綴（iPhone Safari 需要） */
+  -webkit-text-decoration: underline;
+  -webkit-text-decoration-style: wavy;
+  -webkit-text-decoration-color: #FFF001;
+  -webkit-text-underline-offset: 3px;
 }
 </style>
