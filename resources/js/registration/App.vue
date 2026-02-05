@@ -80,8 +80,21 @@ async function checkInitialStatus() {
   const urlParams = new URLSearchParams(window.location.search)
   const testParam = urlParams.get('test')
   const skipCheck = urlParams.get('skipCheck') === 'true'
+  const deadline = new Date('2026-02-03T23:59:59+08:00')
+  const now = new Date()
   
   // 1. 測試模式：URL 參數測試（優先級最高，方便測試）
+  if (testParam === 'registered') {
+    console.log('🧪 測試模式：模擬已報名成功狀態')
+    // 填入簡單的測試報名資料，方便畫面顯示姓名
+    registration.value = registration.value || {
+      name: userName.value || '測試用戶'
+    }
+    isFull.value = false
+    currentStep.value = 'success'
+    return
+  }
+
   if (testParam === 'full' || testParam === 'expired') {
     console.log('🧪 測試模式：模擬', testParam === 'expired' ? '過期' : '額滿', '狀態')
     isFull.value = true
@@ -101,26 +114,21 @@ async function checkInitialStatus() {
     currentStep.value = 'welcome'
     return
   }
-  
-  // 2. 檢查截止日期（2026年2月3日 23:59 台灣時間 UTC+8）
-  const deadline = new Date('2026-02-03T23:59:59+08:00')
-  const now = new Date()
-  
-  if (now > deadline) {
-    console.log('⏰ 已超過截止日期（2026/2/3 23:59），顯示額滿畫面')
-    isFull.value = true
-    currentStep.value = 'success'
-    return
-  }
-  
-  // 3. 沒過期，檢查 userId
+
+  // 2. 檢查 userId（若沒有 userId，依截止日決定顯示頁面）
   if (!userId.value) {
-    console.warn('⚠️ 沒有 userId，跳過狀態檢查')
-    currentStep.value = 'welcome'
+    console.warn('⚠️ 沒有 userId，依截止日期決定顯示頁面')
+    if (now > deadline) {
+      console.log('⏰ 已超過截止日期且無 userId，顯示額滿畫面')
+      isFull.value = true
+      currentStep.value = 'success'
+    } else {
+      currentStep.value = 'welcome'
+    }
     return
   }
   
-  // 4. 調用 API 檢查狀態
+  // 3. 已有 userId：一律先調用 API 檢查狀態
   try {
     const result = await registrationService.checkRegistrationStatus(userId.value)
     
@@ -128,13 +136,24 @@ async function checkInitialStatus() {
     const userData = result.result?.data || result.data || null
     
     if (status === 'registered') {
-      // 已報名：顯示成功頁面
+      // 已報名：顯示成功頁面（不受截止日期影響）
       registration.value = userData
       userName.value = userData?.name || userName.value
       isFull.value = false
       currentStep.value = 'success'
-    } else if (status === 'full') {
-      // 額滿：顯示額滿頁面
+      return
+    }
+
+    // 非 registered 狀態，才考慮截止日期
+    if (now > deadline) {
+      console.log('⏰ 已超過截止日期（2026/2/3 23:59），顯示額滿畫面（未報名或未抽中）')
+      isFull.value = true
+      currentStep.value = 'success'
+      return
+    }
+
+    if (status === 'full') {
+      // 額滿：顯示額滿頁面（尚未截止）
       isFull.value = true
       currentStep.value = 'success'
     } else if (status === 'available') {
